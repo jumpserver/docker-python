@@ -2,9 +2,10 @@ FROM centos:centos7
 MAINTAINER JumpServer Team <ibuler@qq.com>
 
 WORKDIR /tmp
+ARG PYTHON_VERSION=3.8.6
+ENV PYTHON_VERSION=$PYTHON_VERSION
 
 RUN  yum -y install wget zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel libffi-devel gcc make  \
-    && sed -i 's@GSSAPIAuthentication yes@GSSAPIAuthentication no@g' /etc/ssh/ssh_config \
     && yum clean all
 
 RUN localedef -c -f UTF-8 -i zh_CN zh_CN.UTF-8 \
@@ -13,10 +14,10 @@ RUN localedef -c -f UTF-8 -i zh_CN zh_CN.UTF-8 \
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # Install Python
-RUN wget https://www.python.org/ftp/python/3.8.6/Python-3.8.6.tar.xz \
-    && tar xvf Python-3.8.6.tar.xz && cd Python-3.8.6 \
+RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz \
+    && tar xvf Python-${PYTHON_VERSION}.tar.xz && cd Python-${PYTHON_VERSION} \
     && ./configure && make && make install \
-    && cd .. && rm -rf {Python-3.8.6.tar.xz,Python-3.8.6}
+    && cd .. && rm -rf {Python-${PYTHON_VERSION}.tar.xz,Python-${PYTHON_VERSION}}
 
 RUN  rm -f /usr/bin/python \
     && ln -s /usr/local/bin/python3 /usr/bin/python \
